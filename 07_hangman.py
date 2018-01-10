@@ -4,7 +4,7 @@ rw = RandomWords()
 word = rw.random_word()
 guessed = False
 print(word)
-
+tries = 6
 result = list(len(word) * '*')
 
 
@@ -22,7 +22,7 @@ def is_guessed(word, result):
         return False
 
 
-while not guessed:
+while not guessed and tries > 0:
     letter = input('Pick a letter')
 
     if len(letter) > 1:
@@ -35,5 +35,12 @@ while not guessed:
         print(result)
     else:
         print("Ooops!\n")
+        tries = tries - 1
 
     guessed = is_guessed(word, result)
+
+print('The end.')
+if guessed:
+    print('You have won')
+else:
+    print('You lost')
