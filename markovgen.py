@@ -15,6 +15,7 @@ class Markov(object):
         self.open_file = open_file
         self.words = self.file_to_words()
         self.word_size = len(self.words)
+        self.database()
 
     def file_to_words(self):
         self.open_file.seek(0)
@@ -40,7 +41,7 @@ class Markov(object):
             if key in self.cache:
                 self.cache[key].append(w3)
             else:
-                self.cache[key] = w3
+                self.cache[key] = [w3]
 
     def generate_markov_text(self, size=25):
         seed = random.randint(0, self.word_size-3)
@@ -50,6 +51,7 @@ class Markov(object):
 
         for i in range(size):
             gen_words.append(w1)
+            # print(self.cache)
             w1, w2 = w2, random.choice(self.cache[(w1, w2)])
         gen_words.append(w2)
         return ' '.join(gen_words)
