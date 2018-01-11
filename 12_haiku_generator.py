@@ -3,6 +3,15 @@ from nltk.corpus import cmudict
 import nltk
 import markovgen
 
+# Example output
+
+# about her any more if rather,
+# of cards!’ At this the White Rabbit ‘They,
+# dipped suddenly down, so suddenly Alice.
+
+
+# Haiku generator that generates haiku from full book txt and sometimes fails :D
+
 # The essence of haiku is "cutting" (kiru).[1]
 #  This is often represented by the juxtaposition of two images or ideas and a kireji ("cutting word") between them,[2] a kind of verbal punctuation mark which signals the moment of separation and colours the manner in which the juxtaposed elements are related.
 
@@ -15,6 +24,7 @@ import markovgen
 nltk.download('cmudict')
 dict = cmudict.dict()
 file = open('./Resources/alice.txt')
+# alice in the wonderland text from project gutenberg
 
 
 def count_syllables(word):
@@ -55,4 +65,5 @@ haiku = first_phase + ", \n" + second_phase + ", \n" + third_phase + '.'
 print(haiku)
 
 # TODO add seasonal words
-# add markov gen so it maybe makes sence?
+
+
