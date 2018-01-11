@@ -1,6 +1,7 @@
 from random_words import RandomWords
 from nltk.corpus import cmudict
 import nltk
+import markovgen
 
 # The essence of haiku is "cutting" (kiru).[1]
 #  This is often represented by the juxtaposition of two images or ideas and a kireji ("cutting word") between them,[2] a kind of verbal punctuation mark which signals the moment of separation and colours the manner in which the juxtaposed elements are related.
@@ -13,30 +14,34 @@ import nltk
 # it fails from time to time because nlkt dict and RandomWords dict are incompatible
 nltk.download('cmudict')
 dict = cmudict.dict()
+file = open('./Resources/alice.txt')
 
 
 def count_syllables(word):
+    # it fails when encounter hyphenated words a
+    word = ''.join(ch for ch in word if ch.isalpha())
     return (len(list(y for y in x if y[-1].isdigit())) for x in dict[word.lower()])
 
 
 rw = RandomWords()
+markov = markovgen.Markov(file)
 
 
 def generate_phase(syllabes_count):
-    words = []
-    finished = False
     syllables_count_total = 0
-    while not finished:
-        generated_word = rw.random_word()
-        syllabes_in_word = next(count_syllables(generated_word))
+    words = markov.generate_markov_text(syllabes_count).split(' ')
+    phase = []
+    # there is a case where last word may be longer we would need to generate a new chain
+    for i in range(len(words)):
+        syllabes_in_word = next(count_syllables(words[i]))
         if syllabes_in_word < syllabes_count:
-            words.append(generated_word)
+            phase.append(words[i])
             syllables_count_total = syllables_count_total + syllabes_in_word
 
         if syllables_count_total == syllabes_count:
-            finished = True
+            return words
         elif syllables_count_total > syllabes_count:
-            words.pop()
+            phase.pop()
             syllables_count_total = syllables_count_total - syllabes_in_word
 
     return words
