@@ -1,6 +1,7 @@
 import random
 import numpy
 import pprint
+from math import *
 
 grid_size = 10
 number_of_mines = 3
@@ -11,15 +12,23 @@ class Grid:
         self.size = size
         self.number_of_mines = number_of_mines
         self.grid = []
+        self.covered_grid = []
 
     def generate_empty(self):
         grid = [[0 for x in range(self.size)] for y in range(self.size)]
         return grid
 
+    def generate_random_coordinates(self, limit):
+        return random.randint(0, limit), random.randint(0, limit)
+
     def generate_mines(self, number_of_mines):
         mines = []
+        # it can generate same mines ;D
         for i in range(number_of_mines):
-            x, y = random.randint(0, self.size - 1), random.randint(0, self.size - 1)
+            x, y = self.generate_random_coordinates(self.size - 1)
+            if (x, y) in mines:
+                # what if it generates the same number n times?
+                x, y = self.generate_random_coordinates(self.size - 1)
             mines.append((x, y))
         return mines
 
@@ -33,22 +42,15 @@ class Grid:
         for x in range(self.size):
             for y in range(self.size):
                 for mine in mines:
-                    print(mine)
-                    print(x, y)
-                    distance_x = (x - mine[0])
-                    distance_y = (y - mine[1])
-                    total_distance = distance_x + distance_y
-                    print(total_distance)
-                     # if total_distance == 1:
-                    # grid[x][y] = grid[x][y] + 1
-                    # co ze skosami
-                # number means mine immiedietly adjacent to the given box
-                # number means mine immiedietly adjacent to the given box
+                    distance = sqrt((x - mine[0]) ** 2 + (y - mine[1]) ** 2)
+                    if 2 > distance >= 1 and grid[x][y] != -1:
+                        grid[x][y] = grid[x][y] + 1
+                        # 1 for adjacent and 1.4ish for slant
         return grid
 
-    def cover_grid(self, grid):
-        covered_grid = [['X' for x in range(self.size)] for y in range(self.size)]
-        # we have cover, but we need value
+    def cover_grid(self):
+        covered_grid = [['*' for x in range(self.size)] for y in range(self.size)]
+        return covered_grid
 
     def render(self):
         grid = self.generate_empty()
@@ -60,63 +62,6 @@ class Grid:
 
 
 
-# def generate_grid(size, number_of_mines):
-#     grid = [[0 for x in range(size)] for y in range(size)]
-#     mines = []
-#     for i in range(number_of_mines):
-#         x, y = random.randint(0, size - 1), random.randint(0, size - 1)
-#         grid[x][y] = -1
-#         mines.append((x, y))
-#
-#     for x in range(size):
-#         for y in range(size):
-#             for mine in mines:
-#                 print(mine)
-#                 print(x, y)
-#                 distance_x = (x - mine[0])
-#                 distance_y = (y - mine[1])
-#                 total_distance = distance_x + distance_y
-#                 print(total_distance)
-#                 # if total_distance == 1:
-#                     # grid[x][y] = grid[x][y] + 1
-#                     # co ze skosami
-#                 # number means mine immiedietly adjacent to the given box
-#
-#     return grid
-
-#
-# def uncover_cell(x, y):
-#     return 1;
-#
-#
-# def mark_field_as_mine(x, y):
-#     return []
-#
-#
-# def print_current_grid(grid):
-#     return []
-#
-#
-# def distance_to_mine(x, y, mines):
-#     return 2
-#
-#
-# def reveal_field():
-#     x = input('Select x of field you want to uncover')
-#     y = input('Select y of field you want to uncover')
-#     uncover_cell(x, y)
-#     return []  # return grid with revealed field
-#
-#
-# grid = generate_grid(grid_size, number_of_mines)
-# uncovered_cells = []
-# # print(grid)
-# # pprint.pprint(numpy.zeros((5, 5), dtype=int))
-# pprint.pprint(grid)
-#
-# while True:
-#     print_current_grid(grid)
-#     grid = reveal_field()
 
 # the player is initially presented with a grid of undifferentiated squares.
 # Some randomly selected squares, unknown to the player, are designated to contain mines.
