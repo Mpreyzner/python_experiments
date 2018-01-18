@@ -48,7 +48,7 @@ class TestGrid(unittest.TestCase):
         empty_grid = grid.generate_empty()
         mines = grid.generate_mines(mines_number)
         # result = temp[1]
-        print(mines)
+        # print(mines)
         # print(result)
 
         grid_with_mines = grid.add_mines(mines, empty_grid)
@@ -68,6 +68,16 @@ class TestGrid(unittest.TestCase):
             sum = sum + (covered_grid[i])
         self.assertEqual(4, sum.count('*'))
 
+    def test_rendering_grid(self):
+        grid = minesweeper.Grid(2, 1)
+        result = grid.render()
+        self.assertEqual(['*', '*'], ['*', '*'], result)
+
+    def test_uncover_field(self):
+        grid = minesweeper.Grid(2, 1)
+        grid.render()
+        uncovered = grid.reveal(0,0)
+        self.assertNotEqual([['*', '*'], ['*', '*']], uncovered)
 
 
 if __name__ == '__main__':

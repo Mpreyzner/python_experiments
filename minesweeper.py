@@ -1,5 +1,4 @@
 import random
-import numpy
 import pprint
 from math import *
 
@@ -13,6 +12,7 @@ class Grid:
         self.number_of_mines = number_of_mines
         self.grid = []
         self.covered_grid = []
+        self.last_revealed = ()
 
     def generate_empty(self):
         grid = [[0 for x in range(self.size)] for y in range(self.size)]
@@ -46,10 +46,12 @@ class Grid:
                     if 2 > distance >= 1 and grid[x][y] != -1:
                         grid[x][y] = grid[x][y] + 1
                         # 1 for adjacent and 1.4ish for slant
+        self.grid = grid
         return grid
 
     def cover_grid(self):
         covered_grid = [['*' for x in range(self.size)] for y in range(self.size)]
+        self.covered_grid = covered_grid
         return covered_grid
 
     def render(self):
@@ -57,21 +59,46 @@ class Grid:
         mines = self.generate_mines(self.number_of_mines)
         grid_with_mines = self.add_mines(mines, grid)
         grid_with_distances = self.add_distance_to_mines(grid_with_mines, mines)
-        covered_grid = self.cover(grid_with_distances)
+        covered_grid = self.cover_grid()
         return covered_grid
 
+    def reveal(self, x, y):
+        self.covered_grid[x][y] = self.grid[x][y]
+        self.last_revealed = self.covered_grid[x][y]
+        return self.covered_grid
+
+    def lost(self):
+        if self.last_revealed == -1:
+            return True
+        else:
+            return False
+
+    def won(self):
+        sum = []
+        for i in range(len(self.covered_grid)):
+            sum = sum + (self.covered_grid[i])
+
+        won = (sum.count('*') == self.number_of_mines)
+        # print(sum)
+        # print(self.number_of_mines)
+        return won
 
 
+grid = Grid(2,1)
+foo = grid.render()
+pprint.pprint(foo)
+while True:
+    x = int(input("Enter x coordinate of box you want to reveal \n"))
+    y = int(input("Enter y coordinate of box you want to reveal \n"))
+    res = grid.reveal(x, y)
+    pprint.pprint(res)
+    if grid.lost():
+        print('Ooops! Mine you lost')
+        break
+    if grid.won():
+        print('You won. Congratulations')
+        break
 
-# the player is initially presented with a grid of undifferentiated squares.
-# Some randomly selected squares, unknown to the player, are designated to contain mines.
-# Typically, the size of the grid and the number of mines are set in advance by the user
-# The game is played by revealing squares of the grid by indicating each coordinates square.
-# If a square containing a mine is revealed, the player loses the game. I
-# f no mine is revealed, a digit is instead displayed in the square, indicating how many adjacent squares contain mines;
-#  if no mines are adjacent, the square becomes blank, and all adjacent squares will be recursively revealed.
-# The player uses this information to deduce the contents of other squares, and may either safely reveal each square or mark the square as containing a mine.
 
-# In some versions, a question mark may be placed in an unrevealed square to serve as an aid to logical deduction. Implementations may also allow players to quickly "clear around" a revealed square once the correct number of mines have been flagged around it. The game is won when all mine-free squares are revealed, because all mines have been located.
-
-# Some versions of Minesweeper will set up the board by never placing a mine on the first square revealed.[1] Minesweeper for versions of Windows protects the first square revealed; in Windows 7, players may elect to replay a board, in which case the first square may no longer be protected.
+# add some better printing
+# fix bug with generating mines with same coordinates
