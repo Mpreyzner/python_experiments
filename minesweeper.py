@@ -84,14 +84,19 @@ class Grid:
         return won
 
 
-grid = Grid(2,1)
+def print_grid(grid):
+    for i in reversed(range(len(grid))):
+        print(grid[i])
+
+
+grid = Grid(3,3)
 foo = grid.render()
-pprint.pprint(foo)
+print_grid(foo)
 while True:
     x = int(input("Enter x coordinate of box you want to reveal \n"))
     y = int(input("Enter y coordinate of box you want to reveal \n"))
     res = grid.reveal(x, y)
-    pprint.pprint(res)
+    print_grid(res)
     if grid.lost():
         print('Ooops! Mine you lost')
         break
